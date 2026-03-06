@@ -44,6 +44,8 @@ Requirements:
 - `ca65`
 - `ld65`
 
+If either tool is missing, `make` now fails fast with a clear error message.
+
 If your KIM-1 memory map differs, adjust `kim1.cfg` and the I/O constants in `src/nes_controller.s`.
 
 ## Quick start
