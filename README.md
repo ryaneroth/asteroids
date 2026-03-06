@@ -76,4 +76,4 @@ KIM-1 clones and expansions may map RIOT/VIA ports differently. This code provid
 - On boot, game enters **ATTRACT** and displays `PRESS START TO PLAY`.
 - If Start is not pressed for about 15 seconds (frame-based timer), it transitions to **DEMO**.
 - Pressing Start in **ATTRACT** or **DEMO** transitions to **PLAY**.
-- Output is currently shown through KIM monitor `OUTCH` so you can verify flow before wiring text into your kimlife renderer.
+- Output now uses the same `voutch` K-1008 text renderer as `kimlife`, with video RAM mapped at `$C000-$DFFF`.

@@ -6,14 +6,10 @@
 ;   - Pressing START from ATTRACT/DEMO enters PLAY mode
 ;
 ; Video integration note:
-;   This scaffold currently uses OUTCH for visible feedback. Replace
-;   the PRINT_* routines with your kimlife-style video text drawing.
+;   Output uses the same voutch/K-1008 path as kimlife, with video RAM
+;   mapped at $C000-$DFFF.
 
                 .setcpu "6502"
-
-                .include "nes_controller.s"
-
-OUTCH           = $1EA0
 
 STATE_ATTRACT   = $00
 STATE_DEMO      = $01
@@ -28,12 +24,16 @@ GAME_STATE:      .res 1
 STATE_DIRTY:     .res 1
 ATTRACT_LO:      .res 1
 ATTRACT_HI:      .res 1
+PRINT_INDEX:     .res 1
 
                 .segment "CODE"
 
 RESET:
                 sei
                 cld
+                ldx #$FF
+                txs
+                jsr VINIT
                 jsr NES_InitIO
                 jsr GAME_Init
 
@@ -138,7 +138,7 @@ GAME_EnterPlay:
                 rts
 
 ; ---------------------------------------------------
-; Output helpers (temporary)
+; Output helpers
 ; ---------------------------------------------------
 PRINT_ATTRACT_SCREEN:
                 jsr PRINT_CRLF
@@ -146,11 +146,12 @@ PRINT_ATTRACT_SCREEN:
 @loop_a:
                 lda MSG_PRESS_START,x
                 beq @done_a
-                jsr OUTCH
+                stx PRINT_INDEX
+                jsr VOUTCH
+                ldx PRINT_INDEX
                 inx
                 bne @loop_a
 @done_a:
-                jsr PRINT_CRLF
                 rts
 
 PRINT_DEMO_SCREEN:
@@ -159,11 +160,12 @@ PRINT_DEMO_SCREEN:
 @loop_d:
                 lda MSG_DEMO_MODE,x
                 beq @done_d
-                jsr OUTCH
+                stx PRINT_INDEX
+                jsr VOUTCH
+                ldx PRINT_INDEX
                 inx
                 bne @loop_d
 @done_d:
-                jsr PRINT_CRLF
                 rts
 
 PRINT_PLAY_SCREEN:
@@ -172,18 +174,17 @@ PRINT_PLAY_SCREEN:
 @loop_p:
                 lda MSG_PLAY_MODE,x
                 beq @done_p
-                jsr OUTCH
+                stx PRINT_INDEX
+                jsr VOUTCH
+                ldx PRINT_INDEX
                 inx
                 bne @loop_p
 @done_p:
-                jsr PRINT_CRLF
                 rts
 
 PRINT_CRLF:
                 lda #$0D
-                jsr OUTCH
-                lda #$0A
-                jsr OUTCH
+                jsr VOUTCH
                 rts
 
 ; Replace with your frame pacing / vsync control.
@@ -202,3 +203,6 @@ MSG_DEMO_MODE:
                 .asciiz "DEMO MODE"
 MSG_PLAY_MODE:
                 .asciiz "PLAY MODE"
+
+                .include "nes_controller.s"
+                .include "voutch.s"
