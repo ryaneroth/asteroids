@@ -25,6 +25,29 @@ This repository now contains a starting point for building an **Asteroids-style 
   - Initial game scaffold with `ATTRACT`, `DEMO`, and `PLAY` states
   - Attract message (`PRESS START TO PLAY`) and ~15 second timeout to demo mode
 
+
+## Building
+
+This repo now includes a `Makefile` for cc65 toolchains:
+
+```sh
+make
+```
+
+Build outputs:
+
+- `build/asteroids_game.bin`
+- `build/read_controller_demo.bin`
+
+Requirements:
+
+- `ca65`
+- `ld65`
+
+If either tool is missing, `make` now fails fast with a clear error message.
+
+If your KIM-1 memory map differs, adjust `kim1.cfg` and the I/O constants in `src/nes_controller.s`.
+
 ## Quick start
 
 1. Wire the controller as documented in `docs/nes-controller-kim1.md`.
