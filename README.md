@@ -15,9 +15,36 @@ This repository now contains a starting point for building an **Asteroids-style 
 - `src/nes_controller.s`
   - Reusable 6502 routines to read all 8 NES controller buttons
   - Zero-page state bytes and bit definitions
+- `docs/asteroids-game-flow.md`
+  - State-machine overview for attract/demo/play
+  - Frame-based timeout guidance and renderer integration notes
 - `examples/read_controller_demo.s`
   - Minimal polling loop showing how to call the controller routine
   - Example mapping to game-style controls (`rotate`, `thrust`, `fire`, etc.)
+- `src/asteroids_game.s`
+  - Initial game scaffold with `ATTRACT`, `DEMO`, and `PLAY` states
+  - Attract message (`PRESS START TO PLAY`) and ~15 second timeout to demo mode
+
+
+## Building
+
+This repo now includes a `Makefile` for cc65 toolchains:
+
+```sh
+make
+```
+
+Build outputs:
+
+- `build/asteroids_game.bin`
+- `build/read_controller_demo.bin`
+
+Requirements:
+
+- `ca65`
+- `ld65`
+
+If your KIM-1 memory map differs, adjust `kim1.cfg` and the I/O constants in `src/nes_controller.s`.
 
 ## Quick start
 
@@ -40,3 +67,11 @@ KIM-1 clones and expansions may map RIOT/VIA ports differently. This code provid
   - Start: pause
 - Keep rendering/video timing in your existing kimlife-style frame loop.
 - Use `NES_BUTTONS_NEW` for single-shot actions like spawning bullets or toggling menus.
+
+
+## Current game scaffold behavior
+
+- On boot, game enters **ATTRACT** and displays `PRESS START TO PLAY`.
+- If Start is not pressed for about 15 seconds (frame-based timer), it transitions to **DEMO**.
+- Pressing Start in **ATTRACT** or **DEMO** transitions to **PLAY**.
+- Output is currently shown through KIM monitor `OUTCH` so you can verify flow before wiring text into your kimlife renderer.
