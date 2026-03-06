@@ -19,13 +19,9 @@ GAME_BIN := $(BUILD_DIR)/asteroids_game.bin
 DEMO_BIN := $(BUILD_DIR)/read_controller_demo.bin
 
 .DEFAULT_GOAL := all
-.PHONY: all clean dirs check-tools
+.PHONY: all clean dirs
 
-all: check-tools $(GAME_BIN) $(DEMO_BIN)
-
-check-tools:
-	@command -v $(CA65) >/dev/null 2>&1 || { echo "error: $(CA65) not found in PATH"; exit 127; }
-	@command -v $(LD65) >/dev/null 2>&1 || { echo "error: $(LD65) not found in PATH"; exit 127; }
+all: $(GAME_BIN) $(DEMO_BIN)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
